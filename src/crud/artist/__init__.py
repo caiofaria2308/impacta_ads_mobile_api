@@ -18,7 +18,6 @@ def insertLyrics(lyrics: list, artist: str) -> None:
 def getArtistVagalume(name: str) -> dict:
     link = f"https://www.vagalume.com.br/{name}/index.js"
     response = requests.get(link)
-    print(link)
     if response.status_code != 200 :
         return {
             "status": False,
@@ -31,7 +30,7 @@ def getArtistVagalume(name: str) -> dict:
     ("%s", "%s", "%s", "%s", "%s")
     '''
     parameters: tuple = (gerarID(), artist["desc"], artist["url"], artist["pic_small"], artist["pic_medium"])
-    data = Database().executar(sql=sql % parameters, commit=True)
+    data = Database().executar(sql=sql, parameters=parameters, commit=True)
     qtd = len(lyrics)
     for i in range(0, qtd, 50):
         if i == 0:
