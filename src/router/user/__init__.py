@@ -1,12 +1,13 @@
 from fastapi import FastAPI, Header
+from src.utils import auth_required
 import src.crud.user as cruduser
-import src.router.request as request
+import src.router.request.user as user
 import src.router.response.user as responseuser
 
 
 def rotas(app: FastAPI) -> None:
     @app.post('/login', response_model= responseuser.Login )
-    def login(form: request.Login):
+    def login(form: user.Login):
         login = cruduser.login(form)
         if login == b'Conexao':
             return {
@@ -19,3 +20,8 @@ def rotas(app: FastAPI) -> None:
         return {
             "token": login
         }
+
+    @app.post("/user", response_model=responseuser.Create)
+    @auth_required
+    def create_user(form: user.Create, authorization: str = Header(None)):
+        return cruduser.create(form)

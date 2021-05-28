@@ -25,7 +25,7 @@ class Database:
 
 
     def executar(self: object, sql: str="",parameters: tuple=(), **kwargs) -> dict:
-        with self.conectar(self=self) as connection:
+        with self.conectar() as connection:
             if connection == None:
                 return {
                     "status": False,
@@ -37,11 +37,9 @@ class Database:
                     cursor.execute(str(query))
                 except Exception as err:
                     print(err)
-                    cursor.close()
-                    connection.close()
                     return {
                         "status": False,
-                        "error": "erro ao conectar com banco!"
+                        "error": "erro ao executar query!"
                     }
                 if "commit" in kwargs and kwargs["commit"]:
                     connection.commit()

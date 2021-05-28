@@ -21,7 +21,7 @@ create table if not exists artist(
 create table if not exists artistLyrics(
     id char(36) not null primary key,
     artist char(36) not null,
-    name varchar(50) not null,
+    name varchar(100) not null,
     url varchar(100) not null,
     foreign key(artist) references artist(id),
     created_date timestamp not null default current_timestamp(),
