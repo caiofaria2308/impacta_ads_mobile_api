@@ -29,7 +29,8 @@ class Database:
             if connection == None:
                 return {
                     "status": False,
-                    "error": "erro ao conectar com banco!"
+                    "error": "erro ao conectar com banco!",
+                    "status_code": 503
                 }
             with connection.cursor() as cursor:
                 query = sql % parameters
@@ -39,7 +40,8 @@ class Database:
                     print(err)
                     return {
                         "status": False,
-                        "error": "erro ao executar query!"
+                        "error": "erro ao executar query!",
+                        "status_code": 500
                     }
                 if "commit" in kwargs and kwargs["commit"]:
                     connection.commit()

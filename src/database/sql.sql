@@ -36,7 +36,7 @@ create table if not exists playlist(
     foreign key(user) references user(id)
 );
 
-create table if not exists playlistSong(
+create table if not exists playlistLyrics(
     id char(36) not null primary key,
     playlist char(36) not null,
     artistLyrics char(36) not null,

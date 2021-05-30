@@ -1,8 +1,8 @@
 from src.database import Database
-from config import Configuracao
 from src.utils import gerarID
-import requests
 from multiprocessing import Process
+import requests
+
 
 def insertLyrics(lyrics: list, artist: str) -> None:
     for lyric in lyrics:
@@ -16,36 +16,37 @@ def insertLyrics(lyrics: list, artist: str) -> None:
 
 
 def getArtistVagalume(name: str) -> dict:
-    link = f"https://www.vagalume.com.br/{name}/index.js"
+    link: str = f"https://www.vagalume.com.br/{name}/index.js"
     response = requests.get(link)
     if response.status_code != 200 :
         return {
             "status": False,
-            "error": "Não foi possível encontrar artista no Vagalume"
+            "error": "Não foi possível encontrar artista no Vagalume",
+            "status_code": 404
         }
-    artist = response.json()["artist"]
-    lyrics = artist["lyrics"]["item"]
-    sql = '''
+    artist: dict = response.json()["artist"]
+    lyrics: dict = artist["lyrics"]["item"]
+    sql: str = '''
     insert into artist (id, name, url, pic_small, pic_medium) values
     ("%s", "%s", "%s", "%s", "%s")
     '''
     parameters: tuple = (gerarID(), artist["desc"], artist["url"], artist["pic_small"], artist["pic_medium"])
-    data = Database().executar(sql=sql, parameters=parameters, commit=True)
-    qtd = len(lyrics)
+    data: dict = Database().executar(sql=sql, parameters=parameters, commit=True)
+    qtd: int = len(lyrics)
     for i in range(0, qtd, 50):
         if i == 0:
             step = 0
         else:
             step = i + 1
-        p = Process(target=insertLyrics, kwargs={"lyrics": lyrics[step: i+50], "artist": parameters[0]})
+        p: Process = Process(target=insertLyrics, kwargs={"lyrics": lyrics[step: i+50], "artist": parameters[0]})
         p.start()
-    sql = "select * from artist where id = '%s'" % parameters[0]
-    data = Database().executar(sql=sql)
+    sql: str = "select * from artist where id = '%s'" % parameters[0]
+    data: dict = Database().executar(sql=sql)
     data['data'] = data['data'][0]
     return data
 
 
-def getArtist(name: str) -> dict:
+def getArtistByName(name: str) -> dict:
     name_split = name.split(" ")
     name_formatted: str = ""
     for n in name_split:
@@ -53,14 +54,47 @@ def getArtist(name: str) -> dict:
             name_formatted = f"{n}"
             continue
         name_formatted = f"{name_formatted}-{n}"
-    sql = "select * from artist where name = '%s'" % name
-    data = Database().executar(sql=sql)
+    sql: str = f"select * from artist where name like '%{name}%'"
+    data: dict = Database().executar(sql=sql)
     if data["status"]:
         if len(data["data"]) == 0:
-            data = getArtistVagalume(name_formatted)
+            data: dict = getArtistVagalume(name_formatted)
             return data
         return {
             "status": True,
             "data": data["data"][0]
         }
+    return data
+
+
+def getArtistByID(id: str) -> dict:
+    sql: str = " select * from artist where id = '%s'"
+    parameters: tuple = (id,)
+    data: dict = Database().executar(sql=sql, parameters=parameters)
+    if data["status"]:
+        return {
+            "status": True,
+            "data": data["data"][0]
+        }
+    return data
+
+
+def getLyrics(artistID: str) -> dict:
+    sql: str = '''
+        select 
+            l.id,
+            a.id as artistID,
+            a.name as artistName,
+            a.url as artistUrl,
+            a.pic_small as artistPic_small,
+            a.pic_medium as artistPic_medium,
+            a.created_date as artistCreated_date,
+            l.name,
+            l.url
+        from artistLyrics l
+        left join artist a on a.id = l.artist
+        where a.id = '%s' 
+    '''
+    parameters: tuple = (artistID,)
+    data: dict = Database().executar(sql=sql, parameters=parameters)
     return data

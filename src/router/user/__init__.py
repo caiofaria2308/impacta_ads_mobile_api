@@ -21,7 +21,6 @@ def rotas(app: FastAPI) -> None:
             "token": login
         }
 
-    @app.post("/user", response_model=responseuser.Create)
     @auth_required
     def create_user(form: user.Create, authorization: str = Header(None)):
         return cruduser.create(form)

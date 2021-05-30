@@ -12,8 +12,20 @@ def gerarID() -> str:
 def func_error():
     return {
         "status": False,
-        "error": "Token inválido ou expirado"
+        "data": {},
+        "error": "Token inválido ou expirado",
+        "status_code": 400
     }
+
+
+def authorizationDecrypt(authorization: str):
+    token_split = authorization.split(" ")
+    conf = Configuracao()
+    conf.carregar_config()
+    try:
+        return jwt.decode(token_split[1], conf.secret, algorithms="HS256", options={"verify_exp": True})
+    except:
+        return func_error()
 
 
 def auth_required(func) -> None:
@@ -21,13 +33,8 @@ def auth_required(func) -> None:
     async def wrapper(*args, **kwargs):
         if "authorization" not in kwargs or kwargs["authorization"] in (None, "", " "):
             return func_error()
-        token_split = kwargs["authorization"].split(" ")
-        conf = Configuracao()
-        conf.carregar_config()
-        try:
-            token_decoded = jwt.decode(token_split[1], conf.secret, algorithms="HS256", options={"verify_exp": True})
-        except:
+        returnDecrypt = authorizationDecrypt(kwargs["authorization"])
+        if returnDecrypt == func_error():
             return func_error()
-
         return func(*args, **kwargs)
     return  wrapper

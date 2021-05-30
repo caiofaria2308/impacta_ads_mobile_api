@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import Dict
+from typing import Dict, Optional
 
 class Login(BaseModel):
     token: str
@@ -14,4 +14,6 @@ class User(BaseModel):
 
 class Create(BaseModel):
     status: bool
-    data: User
+    data: Optional[User]
+    error: Optional[str]
+    status_code: Optional[int]
