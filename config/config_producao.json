@@ -1,9 +1,0 @@
-{
-  "database": {
-    "host": "caiofaria2308.mysql.pythonanywhere-services.com",
-    "username": "caiofaria2308",
-    "password": "Mobmusic@impacta",
-    "name": "caiofaria2308$mobMusic"
-  },
-  "secret" : ""
-}
