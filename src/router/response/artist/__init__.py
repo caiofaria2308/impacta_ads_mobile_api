@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional, List
-import src.router.response.artist as respartist
+from datetime import date, datetime
 
 class Artist(BaseModel):
     id: str
@@ -8,12 +8,12 @@ class Artist(BaseModel):
     url: str
     pic_small: str
     pic_medium: str
-    created_date: str
+    created_date: datetime
 
 
 class Lyrics(BaseModel):
     id: str
-    artist: respartist.Artist
+    artist: Artist
     name: str
     url: str
 

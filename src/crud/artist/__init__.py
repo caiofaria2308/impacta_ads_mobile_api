@@ -18,7 +18,7 @@ def insertLyrics(lyrics: list, artist: str) -> None:
 def getArtistVagalume(name: str) -> dict:
     link: str = f"https://www.vagalume.com.br/{name}/index.js"
     response = requests.get(link)
-    if response.status_code != 200 :
+    if response.status_code != 200:
         return {
             "status": False,
             "error": "Não foi possível encontrar artista no Vagalume",
@@ -42,7 +42,6 @@ def getArtistVagalume(name: str) -> dict:
         p.start()
     sql: str = "select * from artist where id = '%s'" % parameters[0]
     data: dict = Database().executar(sql=sql)
-    data['data'] = data['data'][0]
     return data
 
 
@@ -54,12 +53,11 @@ def getArtistByName(name: str) -> dict:
             name_formatted = f"{n}"
             continue
         name_formatted = f"{name_formatted}-{n}"
-    sql: str = f"select * from artist where name like '%{name}%'"
+    sql: str = f"select * from artist where name like '{name}'"
     data: dict = Database().executar(sql=sql)
     if data["status"]:
         if len(data["data"]) == 0:
-            data: dict = getArtistVagalume(name_formatted)
-            return data
+            data = getArtistVagalume(name_formatted)
         return {
             "status": True,
             "data": data["data"][0]

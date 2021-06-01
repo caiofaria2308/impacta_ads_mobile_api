@@ -2,7 +2,8 @@ from pydantic import BaseModel
 from typing import Dict, Optional
 
 class Login(BaseModel):
-    token: str
+    token: Optional[str]
+    error: Optional[str]
 
 
 class User(BaseModel):

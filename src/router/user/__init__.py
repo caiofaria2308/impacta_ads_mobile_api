@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Header
+from fastapi import FastAPI, Header, HTTPException
 from src.utils import auth_required
 import src.crud.user as cruduser
 import src.router.request.user as user
@@ -21,6 +21,20 @@ def rotas(app: FastAPI) -> None:
             "token": login
         }
 
-    @auth_required
+
+    @app.post('/user', response_model=responseuser.Create)
     def create_user(form: user.Create, authorization: str = Header(None)):
-        return cruduser.create(form)
+        returnFunction = cruduser.create(form)
+        if not returnFunction["status"]:
+            raise HTTPException(
+                status_code=returnFunction["status_code"],
+                detail=returnFunction["error"]
+            )
+        return returnFunction
+
+
+    @app.get('/')
+    def index():
+        return {
+            "status": True
+        }

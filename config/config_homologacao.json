@@ -1,9 +1,0 @@
-{
-  "database": {
-    "host": "localhost",
-    "username": "anchor",
-    "password": "Anchor_08031",
-    "name": "caiofaria2308$mobMusic"
-  },
-  "secret" : "283d948471540ddb20f60175ae790d996d71ec577b6e1b466ae6779e50fb97d5"
-}

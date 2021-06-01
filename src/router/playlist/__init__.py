@@ -12,7 +12,7 @@ def rotas(app: FastAPI) -> None:
         decrypt = authorizationDecrypt(authorization)
         returnFunction = crud.insertPlayList(form=form, userID=decrypt["id"])
         if not returnFunction["status"]:
-            return HTTPException(
+            raise HTTPException(
                 status_code=returnFunction["status_code"],
                 detail=returnFunction["error"]
             )
@@ -26,14 +26,14 @@ def rotas(app: FastAPI) -> None:
         if playlistID is None:
             returnFunction = crud.getPlayLists(userID=decrypt["id"])
             if not returnFunction["status"]:
-                return HTTPException(
+                raise HTTPException(
                     status_code=returnFunction["status_code"],
                     detail=returnFunction["error"]
                 )
             return returnFunction
         returnFunction = crud.getPlayListByID(playlistID=playlistID, userID=decrypt["id"])
         if not returnFunction["status"]:
-            return HTTPException(
+            raise HTTPException(
                 status_code=returnFunction["status_code"],
                 detail=returnFunction["error"]
             )
@@ -43,7 +43,7 @@ def rotas(app: FastAPI) -> None:
     @app.post("/playlist/lyrics", response_model=response.GetAllPlayListLyrics)
     def createPlaylistLyrics(playlistID: str = None, form: playlistreq.PlayListSong = None, authorization: str = Header(None)):
         if playlistID is None:
-            return HTTPException(
+            raise HTTPException(
                 status_code=400,
                 detail="playlistID é um campo obrigatório!"
             )
@@ -51,7 +51,7 @@ def rotas(app: FastAPI) -> None:
         form["playlistID"] = playlistID
         returnFunction = crud.insertPlayListLyrics(form=form, userID=decrypt["id"])
         if not returnFunction["status"]:
-            return HTTPException(
+            raise HTTPException(
                 status_code=returnFunction["status_code"],
                 detail=returnFunction["error"]
             )
@@ -62,14 +62,14 @@ def rotas(app: FastAPI) -> None:
     @app.delete("/playlist/lyrics", response_model=response.Delete)
     def deletePlaylistLyrics(playlistLyricID: str = None, authorization: str = Header(None)):
         if playlistLyricID is None:
-            return HTTPException(
+            raise HTTPException(
                 status_code=400,
                 detail="playlistLyricID é um campo obrigatório!"
             )
         decrypt = authorizationDecrypt(authorization)
         returnFunction = crud.deletePlayListLyrics(playlistLyricID=playlistLyricID, userID=decrypt["id"])
         if not returnFunction["status"]:
-            return HTTPException(
+            raise HTTPException(
                 status_code=returnFunction["status_code"],
                 detail=returnFunction["error"]
             )
@@ -79,14 +79,14 @@ def rotas(app: FastAPI) -> None:
     @app.delete("/playlist", response_model=response.Delete)
     def deletePlaylist(playlistID: str = None, authorization: str = Header(None)):
         if playlistID is None:
-            return HTTPException(
+            raise HTTPException(
                 status_code=400,
                 detail="playlistID é um campo obrigatório!"
             )
         decrypt = authorizationDecrypt(authorization)
         returnFunction = crud.deletePlayList(playlistID=playlistID, userID=decrypt["id"])
         if not returnFunction["status"]:
-            return HTTPException(
+            raise HTTPException(
                 status_code=returnFunction["status_code"],
                 detail=returnFunction["error"]
             )

@@ -45,6 +45,7 @@ def create(form: userrequest.Create):
         data = Database().executar(sql=sql)
         if data['status']:
             row = data['data'][0]
+            print(data)
             return {
                 "status": True,
                 "data": {
@@ -54,5 +55,7 @@ def create(form: userrequest.Create):
                     "created_id": row["created_date"]
                 }
             }
+        print(data)
         return data
+    print(data)
     return data
