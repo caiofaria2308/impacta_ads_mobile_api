@@ -98,12 +98,12 @@ def getAllArtists() -> dict:
                     l.id,
                     l.name,
                     l.url
-                FROM artistLyrics
-                WHERE l.artist = '%s'
+                FROM artistLyrics l
+                WHERE l.artist = '{}'
                 ORDER BY name ASC
-            '''
-            parameters: list = [artist["id"]]
-            lyrics: dict = Database().executar(sql=sql, parameters=parameters)
+            '''.format(artist["id"])
+
+            lyrics: dict = Database().executar(sql=sql)
             if lyrics["status"]:
                 artists["data"][indice]["lyrics"] = lyrics["data"]
             else:
