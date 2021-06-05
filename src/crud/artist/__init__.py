@@ -77,6 +77,40 @@ def getArtistByID(id: str) -> dict:
     return data
 
 
+def getAllArtists() -> dict:
+    sql: str = '''
+        SELECT 
+            a.id,
+            a.name,
+            a.url,
+            a.pic_small,
+            a.pic_medium,
+            a.created_date
+        FROM artist a
+        ORDER BY name ASC
+    '''
+    artists: dict = Database().executar(sql=sql)
+    if artists["status"]:
+        for indice in range(len(artists["data"])):
+            artist: dict = artists["data"][indice]
+            sql: str = '''
+                SELECT 
+                    l.id,
+                    l.name,
+                    l.url
+                FROM artistLyrics
+                WHERE l.artist = '%s'
+                ORDER BY name ASC
+            '''
+            parameters: list = [artist["id"]]
+            lyrics: dict = Database().executar(sql=sql, parameters=parameters)
+            if lyrics["status"]:
+                artists["data"][indice]["lyrics"] = lyrics["data"]
+            else:
+                continue
+    return artists
+
+
 def getLyrics(artistID: str) -> dict:
     sql: str = '''
         select 

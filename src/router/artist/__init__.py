@@ -36,3 +36,14 @@ def rotas(app: FastAPI) -> None:
             )
         return returnFunction
     return
+
+    @auth_required
+    @app.get('/artist', response_model=response.GetArtists)
+    def getArtists(authorization: str = Header()) -> dict:
+        returnFunction = crud.getAllArtists()
+        if not returnFunction["status"]:
+            raise HTTPException(
+                status_code=returnFunction["status_code"],
+                response=returnFunction["error"]
+            )
+        return returnFunction
