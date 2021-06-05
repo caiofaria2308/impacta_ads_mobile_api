@@ -17,6 +17,11 @@ class Lyrics(BaseModel):
     name: str
     url: str
 
+class LyricsList(BaseModel):
+    id: str
+    name: str
+    url: str
+
 
 class Create(BaseModel):
     status: bool
@@ -40,7 +45,7 @@ class Artists(BaseModel):
     pic_small: str
     pic_medium: str
     created_date: datetime
-    lyrics: List[Lyrics]
+    lyrics: List[LyricsList]
 
 
 class GetArtists(BaseModel):

@@ -35,11 +35,10 @@ def rotas(app: FastAPI) -> None:
                 detail=returnFunction["error"]
             )
         return returnFunction
-    return
 
     @auth_required
     @app.get('/artists/', response_model=response.GetArtists)
-    def getArtists(authorization: str = Header()) -> dict:
+    def getArtists(authorization: str = Header(None)) -> dict:
         returnFunction = crud.getAllArtists()
         if not returnFunction["status"]:
             raise HTTPException(
@@ -47,3 +46,4 @@ def rotas(app: FastAPI) -> None:
                 response=returnFunction["error"]
             )
         return returnFunction
+    return
